@@ -53,7 +53,7 @@ RUN docker-php-ext-enable imagick
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=1.10.25
 
-RUN composer self-update --1
+RUN composer self-update --2
 
 RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash
 RUN apt install -y symfony-cli
@@ -74,6 +74,7 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync && install-php-extens
 #pcntl ext. required to laravel/pail
 RUN docker-php-ext-configure pcntl --enable-pcntl && docker-php-ext-install pcntl;
 
-
+#NVM to install Node 20
 RUN curl -o- 'https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh' | bash
-#RUN  cd ~/root/.nvm/ && bash nvm.sh && nvm install 20  ##node 20
+RUN cd ~/../root/.nvm/ && bash nvm.sh && bash -l -c "nvm install 20"
+
