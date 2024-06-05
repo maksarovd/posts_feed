@@ -16,18 +16,19 @@ vendor: [Maksarov Dmitriy](https://github.com/maksarovd)
    
    ```
    docker-compose up -d --build
-   ``` 
- 3 **run bash script** to deploy from backup **from you mysql container**
- 
-   ```
-   docker-compose exec mysql bash
-   
-   cd ../home && bash sql.sh
-   ```   
+   ```  
+3 **run deploy command from you php container**
+
+  ```
+  docker-compose exec php bash
+  
+  composer install && php artisan migrate && npm install && npm run build && npm run dev  
+  ```   
+4 add  **.env** file to project root (remember **host name - is service name** into docker-compose.yaml)
 
 ##instructions:
   
-  - To **testing functionality** go to [this VPS](http://bloogger.space/) or **deploy you local copy**
+  - To **testing functionality** go to [this VPS](http://bloogger.space/) or **deploy you local copy** todo//add httpasswd
   
   - **User** need be logged, so a added some users and give they credentials
     
