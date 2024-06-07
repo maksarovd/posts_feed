@@ -29,7 +29,7 @@
                             <label for="text" class="form-label">Edit Comment</label>
                             <textarea class="form-control textarea" name="text" id="text" rows="10">{{ $comment->text }}</textarea>
 
-                            @if($comment_service->hasImage($comment))
+                            @if(\App\Models\File::hasImage($comment))
                                 <div class="media-object image" style="display: none; width: 320px;height: 240px">
                                     <img src="{{ $comment_service->getUrl($comment) }}" alt="" class="image">
                                 </div>
@@ -39,7 +39,7 @@
                                 </div>
                             @endif
 
-                            @if($comment_service->hasFile($comment))
+                            @if(\App\Models\File::hasFile($comment))
                                 <div class="media-object file" style="display: none;" >
                                     <button class="btn btn-success"><a href="{{ $comment_service->getUrl($comment) }}" class="file-download"  target="_blank">Download  <i class="bi bi-download"></i></a></button>
                                 </div>
