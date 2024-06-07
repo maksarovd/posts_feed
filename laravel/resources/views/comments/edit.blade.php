@@ -60,7 +60,11 @@
                             {{ __('File upload success!') }}
                         </div>
 
-                        <input type="hidden" class="form-control file-input"   name="file_input" value="{{ $comment->file->file_name }}">
+                        @if($comment->file)
+                            <input type="hidden" class="form-control file-input"   name="file_input" value="{{ $comment->file->file_name }}">
+                        @else
+                            <input type="hidden" class="form-control file-input"   name="file_input" value="">
+                        @endif
 
                         <input type="hidden" class="form-control" name="user_id" value="{{ Auth::user()->id }}">
 
