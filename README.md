@@ -17,32 +17,54 @@ vendor: [Maksarov Dmitriy](https://github.com/maksarovd)
    ```
    docker-compose up -d --build
    ```  
-3 **run deploy command from you php container**
+3 cut  **.env** file from **.env,example**  to project root (remember **host name - is service name** into docker-compose.yaml)
+
+  DB_CONNECTION=mysql
+  
+  DB_HOST=mysql
+  
+  DB_PORT=3306
+  
+  DB_DATABASE=database
+  
+  DB_USERNAME=maksarovd
+  
+  DB_PASSWORD=1
+
+4 **run deploy command from you php container**
 
   ```
-  docker-compose exec php bash
-  
   composer install && php artisan migrate && npm install && npm run build && npm run dev  
   ```   
-4 add  **.env** file to project root (remember **host name - is service name** into docker-compose.yaml)
+5 get permission to project **run deploy command from you php container**
+ ```
+  chown -R www-data:www-data vendor && chown -R www-data:www-data storage && php artisan key:generate
+  
+  ``` 
+6 run  **npm run dev** and exit to load vite breeze frontend and link media folder
+```
+php artisan storage:link
+
+``` 
+
 
 ##instructions:
   
-  - To **testing functionality** go to [this VPS](http://bloogger.space/) or **deploy you local copy** todo//add httpasswd
+  - To **testing functionality** go to [this VPS](http://bloogger.space/) or **deploy you local copy** 
   
-  - **User** need be logged, so a added some users and give they credentials
+  - **User** need be logged, with field homepage
     
-  - **User** can create **Posts** or create **Comment** to answer to **Post** 
+  - **User** can create  **Comment**
     
-  - **User** can **Sort Posts** by **User Name | E-mail | Created_at (ASC/DESC)**
+  - **User** can **Sort Comments** by **User Name | E-mail | Created_at (ASC/DESC)**
     
-  - **User** can add a **Picture** to **Post** text field
+  - **User** can add a **Picture** to **Comments**  or text file
   
   - **User** can add accessible **HTML** tags like **a | code | strong | i** via **Buttons**
   
-  - **User** can check out **markdown mode** to **text mode** to seen how will **Post** look
+  - **User** can check out **markdown mode** to **text mode** to seen how will **Comments** look
   
-  - **User** can **edit and delete** own **Post**
+  - **User** can **edit and delete** own **Comments**
   
  
     
