@@ -16,6 +16,13 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
+        <!-- Home Page -->
+        <div class="mt-4">
+            <x-input-label for="homepage" :value="__('Home Page ')" />
+            <x-text-input id="homepage" class="block mt-1 w-full" type="text" name="homepage" :value="old('homepage')"  autocomplete="url" placeholder="(optional)"/>
+            <x-input-error :messages="$errors->get('homepage')" class="mt-2" />
+        </div>
+
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />

@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\{CommentController, ProfileController};
 use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\SetNestedLevelToComment;
+use App\Http\Middleware\{SetNestedLevelToComment, SetSortingToRequest, EncryptCookie};
 
 /*
 |--------------------------------------------------------------------------
@@ -23,13 +23,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth' , EncryptCookie::class)->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
-    Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+    Route::get('/comments', [CommentController::class, 'index'])->name('comments.index')->middleware(SetSortingToRequest::class);
 
     Route::get('/comments/create/{comment?}', [CommentController::class, 'create'])->name('comments.create');
 
@@ -44,6 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
 
     Route::get('/comments/reloadCaptcha', [CommentController::class, 'reloadCaptcha'])->name('comments.reload_captcha');
+
+    Route::post('/comments/upload', [CommentController::class, 'upload'])->name('comments.upload');
 });
 
 require __DIR__.'/auth.php';

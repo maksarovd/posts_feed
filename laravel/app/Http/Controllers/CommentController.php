@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\{Request, JsonResponse, RedirectResponse};
 use Illuminate\View\View;
-use App\Models\Comment;
-use App\Http\Requests\CheckRequest;
+use App\Models\{Comment, File};
+use App\Http\Requests\{ValidateUploadRequest, CheckRequest};
+use App\Services\CommentService;
+use Illuminate\Support\Facades\{Storage, Session};
 
 
 class CommentController extends Controller
@@ -16,11 +18,18 @@ class CommentController extends Controller
      *
      *
      * @access public
+     * @param Request $request
+     * @param CommentService $commentService
      * @return View
      */
-    public function index(Request $request): View
+    public function index(Request $request, CommentService $commentService): View
     {
-        return view('comments.index', ['comments' => Comment::comments($request)]);
+        $sorting = $request->get('sorting');
+
+        return view('comments.index', [
+            'comments' => Comment::comments($sorting),
+            'comment_service' => $commentService
+        ]);
     }
 
 
@@ -44,11 +53,16 @@ class CommentController extends Controller
      *
      * @access public
      * @param Comment $comment
+     * @param CommentService $commentService
      * @return View
      */
-    public function show(Comment $comment): View
+    public function show(Comment $comment, CommentService $commentService): View
     {
-        return view('comments.show', ['comments' => $comment->answers($comment->id)]);
+        return view('comments.show', [
+            'comment'  => $comment,
+            'comments' => $comment->answers($comment->id),
+            'comment_service' => $commentService
+        ]);
     }
 
 
@@ -58,11 +72,15 @@ class CommentController extends Controller
      *
      * @access public
      * @param Comment $comment
+     * @param CommentService $commentService
      * @return View
      */
-    public function edit(Comment $comment): View
+    public function edit(Comment $comment, CommentService $commentService): View
     {
-        return view('comments.edit', ['comment' => $comment]);
+        return view('comments.edit', [
+            'comment' => $comment,
+            'comment_service' => $commentService
+        ]);
     }
 
 
@@ -76,7 +94,21 @@ class CommentController extends Controller
      */
     public function store(CheckRequest $request): RedirectResponse
     {
-        Comment::create($request->all());
+        try{
+            (new Comment)->fill($request->except(['file_input', 'file']))->save();
+
+            $file = [
+                'comment_id' => Comment::latest()->first()->id,
+                'file_name'  => $request->file_input
+            ];
+
+            File::create($file);
+
+
+            Session::flash('message','Saving Success!');
+        }catch(\Throwable $exception){
+            Session::flash('error','Error when saving Comment ' .  $exception->getMessage());
+        }
         return redirect()->route('comments.index');
     }
 
@@ -92,7 +124,20 @@ class CommentController extends Controller
      */
     public function update(CheckRequest $request, Comment $comment): RedirectResponse
     {
-        $comment->fill($request->all())->save();
+        try{
+            $comment->fill($request->except(['file_input', 'file']))->save();
+
+            $file = [
+                'file_name'  => $request->file_input
+            ];
+
+            File::find($comment->file->id)->fill($file)->save();
+
+
+            Session::flash('message','Updating Success!');
+        }catch(\Throwable $exception){
+            Session::flash('error','Error when updating Comment ' .  $exception->getMessage());
+        }
         return redirect()->route('comments.show', ['comment' => $comment]);
     }
 
@@ -107,8 +152,13 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment): JsonResponse
     {
-        $comment->delete();
-        return response()->json([]);
+        try{
+            $comment->delete();
+            Session::flash('message','Deleting Success!');
+        }catch(\Throwable $exception){
+            Session::flash('error','Error when deleting Comment ' .  $exception->getMessage());
+        }
+        return response()->json(['url' => route('comments.index')]);
     }
 
 
@@ -121,6 +171,22 @@ class CommentController extends Controller
      */
     public function reloadCaptcha(): JsonResponse
     {
-        return response()->json(['captcha' => captcha_img()]);
+        return response()->json(['captcha' => captcha_img('characters')]);
+    }
+
+
+    /**
+     * Upload
+     *
+     *
+     * @param ValidateUploadRequest $request
+     * @return JsonResponse
+     */
+    public function upload(ValidateUploadRequest $request): JsonResponse
+    {
+        $name = time().'.'.$request->file->getClientOriginalExtension();
+        $request->file->storeAs('public/uploads', $name);
+        $url  = $request->schemeAndHttpHost() . Storage::url(File::UPLOAD_FILE_PATH.'/'.$name);
+        return response()->json(['url' => $url, 'file' => basename($url)]);
     }
 }

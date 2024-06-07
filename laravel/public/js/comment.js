@@ -8,8 +8,8 @@ var Comment = {
                 headers: {'X-CSRF-TOKEN': token},
                 dataType: "json",
                 data: {},
-                success: function() {
-                    window.location.reload();
+                success: function(response) {
+                    window.location.href = response.url;
                 },
                 error: function(xhr) {
                     Spinner.hide();
@@ -17,11 +17,5 @@ var Comment = {
                 }
             });
         }
-    },
-    show: function(){
-
-    },
-    edit: function(){
-
     },
 };

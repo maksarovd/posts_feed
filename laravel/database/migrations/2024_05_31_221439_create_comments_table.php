@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->char('homepage',50)->nullable(true);
             $table->char('captcha', 20);
             $table->text('text');
             $table->tinyInteger('nested')->nullable();

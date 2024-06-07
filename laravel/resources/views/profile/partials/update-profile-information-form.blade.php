@@ -47,6 +47,12 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="homepage" :value="__('Home Page')" />
+            <x-text-input id="homepage" name="homepage" type="text" class="mt-1 block w-full" :value="old('homepage', $user->homepage)"  autofocus autocomplete="url" />
+            <x-input-error class="mt-2" :messages="$errors->get('homepage')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

@@ -2,7 +2,11 @@
     <x-slot name="header">
         <div class="col-12">
             <div class="d-flex">
-                <a href="{{ route('comments.index') }}"><button class="btn btn-success">Back</button></a>
+                <a href="{{ route('comments.index') }}"><button class="btn btn-success button" style="margin: 2px;">Back</button></a>
+                @if(Auth::user()->id === $comment->user_id)
+                    <a href="{{ route('comments.edit', $comment->id) }}"><button class="btn btn-warning" style="margin: 2px;">Edit</button></a>
+                    <button class="btn btn-danger" onclick="Comment.delete('{{ route('comments.destroy',$comment->id) }}','{{ csrf_token() }}')" style="margin: 2px;">Delete</button>
+                @endif
             </div>
         </div>
     </x-slot>
@@ -29,21 +33,37 @@
                                                                         <div>
                                                                             <div class="d-flex justify-content-between align-items-center">
                                                                                 <p class="mb-1">
-                                                                                    {{ $comment->getAuthorName($comment)->name }} <span class="small">- {{ $comment->created_at }}</span>
+                                                                                    {{ $comment->getAuthor($comment)->name }} <span class="small">- {{ $comment_service->getTransformDate($comment->created_at) }}</span>
                                                                                 </p>
                                                                             </div>
 
                                                                             @if($comment->parent_id)
                                                                                 <p class="small mb-0">
-                                                                                    <b>
-                                                                                        {{ $comment->getParentComment($comment)->text }}
-                                                                                    </b>
+                                                                                    <div class="alert alert-light" role="alert">
+                                                                                        <b>
+                                                                                            {!! $comment_service->cutText($comment->getParent($comment)->text,50)  !!}
+                                                                                        </b>
+                                                                                    </div>
                                                                                 </p>
                                                                             @endif
+
+                                                                            @if($comment_service->hasImage($comment))
+                                                                                <p class="small mb-0">
+                                                                                <div class="media-object image" style="width: 320px;height: 240px">
+                                                                                    <img src="{{ $comment_service->getUrl($comment) }}" alt="" class="image">
+                                                                                </div>
+                                                                                </p>
+                                                                            @elseif($comment_service->hasFile($comment))
+                                                                                <div class="media-object file">
+                                                                                    <button class="btn btn-success"><a href="{{ $comment_service->getUrl($comment) }}" target="_blank">Download  <i class="bi bi-download"></i></a></button>
+                                                                                </div>
+                                                                            @endif
+
+
                                                                             <p class="small mb-0">
-                                                                                {{ $comment->text }}
+                                                                                {!! $comment->text !!}
                                                                             </p>
-                                                                            <a href="{{ route('comments.create',$comment->id) }}"><i class="fas fa-reply fa-xs"></i><span class="small" style="color: blue;"> reply</span></a>
+                                                                            <a href="{{ route('comments.create',$comment->id) }}"> <span class="small" style="color: blue;"><i class="bi bi-reply"></i> reply </span></a>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -59,7 +79,22 @@
                         </div>
                     </section>
                 </div>
+
+                @if (session('message'))
+                    <div class="alert alert-success">
+                        {{ session('message') }}
+                    </div>
+                @endif
+                @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
+    <!-- Spinner -->
+    <section id="loading">
+        <div id="loading-content"></div>
+    </section>
 </x-app-layout>
