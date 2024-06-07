@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\AcceptedHtmlTags;
+use App\Rules\{AcceptedHtmlTags, ValidationHtmlTags};
 
 class CheckRequest extends FormRequest
 {
@@ -18,7 +18,7 @@ class CheckRequest extends FormRequest
     {
         return [
             'captcha' => ['required','captcha'],
-            'text'    => ['required', 'max:2000', new AcceptedHtmlTags],
+            'text'    => ['required', 'max:2000', new AcceptedHtmlTags, new ValidationHtmlTags($this)],
         ];
     }
 

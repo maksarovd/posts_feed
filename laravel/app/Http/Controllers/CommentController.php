@@ -97,12 +97,15 @@ class CommentController extends Controller
         try{
             (new Comment)->fill($request->except(['file_input', 'file']))->save();
 
-            $file = [
-                'comment_id' => Comment::latest()->first()->id,
-                'file_name'  => $request->file_input
-            ];
+            if($request->file_input){
+                $file = [
+                    'comment_id' => Comment::latest()->first()->id,
+                    'file_name'  => $request->file_input
+                ];
 
-            File::create($file);
+                File::create($file);
+            }
+
 
 
             Session::flash('message','Saving Success!');
@@ -127,11 +130,13 @@ class CommentController extends Controller
         try{
             $comment->fill($request->except(['file_input', 'file']))->save();
 
-            $file = [
-                'file_name'  => $request->file_input
-            ];
+            if($request->file_input){
+                $file = [
+                    'file_name'  => $request->file_input
+                ];
 
-            File::find($comment->file->id)->fill($file)->save();
+                File::find($comment->file->id)->fill($file)->save();
+            }
 
 
             Session::flash('message','Updating Success!');

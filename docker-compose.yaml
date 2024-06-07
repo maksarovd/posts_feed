@@ -8,6 +8,7 @@ services:
         - VERSION_PHP=php:8.2-fpm
     volumes:
       - './laravel:/var/www/html'
+      - './php/php.ini:/usr/local/etc/php/php.ini'
       - './php/pcntl.ini:/usr/local/etc/php/conf.d/docker-php-ext-pcntl.ini'
       - './php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini'
     expose:
