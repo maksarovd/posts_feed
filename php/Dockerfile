@@ -78,3 +78,5 @@ RUN docker-php-ext-configure pcntl --enable-pcntl && docker-php-ext-install pcnt
 RUN curl -o- 'https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh' | bash
 RUN cd ~/../root/.nvm/ && bash nvm.sh && bash -l -c "nvm install 20"
 
+RUN apt-get update && apt-get install -y libtidy-dev && \
+    docker-php-ext-install tidy
