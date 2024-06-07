@@ -22,6 +22,14 @@ class File extends Model
 
     const TXT_FILE_EXTENSION = 'txt';
 
+    const GIF_FILE_EXTENSION = 'gif';
+
+    const PNG_FILE_EXTENSION = 'png';
+
+    const JPEG_FILE_EXTENSION = 'jpeg';
+
+    const JPG_FILE_EXTENSION = 'jpg';
+
     /**
      * Comment
      *
