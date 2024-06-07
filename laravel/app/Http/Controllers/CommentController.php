@@ -191,8 +191,48 @@ class CommentController extends Controller
     public function upload(ValidateUploadRequest $request): JsonResponse
     {
         $name = time().'.'.$request->file->getClientOriginalExtension();
-        $request->file->storeAs('public/uploads', $name);
+
+        if($request->file->getClientOriginalExtension() != File::TXT_FILE_EXTENSION){
+            if (move_uploaded_file($_FILES['file']['tmp_name'], $name)) {
+                $uploadedImage = imagecreatefromjpeg($name);
+                if (!$uploadedImage) {
+                    throw new Exception('The uploaded file is corrupted (or wrong format)');
+                } else {
+                    $resizedImage = $this->PIPHP_ImageResize($uploadedImage,File::MEDIA_FILE_WIDTH,File::MEDIA_FILE_HEIGHT);
+                    // save your image on disk
+                    if (!imagejpeg ($resizedImage, storage_path('app/public/uploads/'). $name )) {
+                        throw new Exception('failed to save resized image');
+                    }
+                }
+            } else {
+                throw new Exception('failed Upload');
+            }
+        }
+
+        if($request->file->getClientOriginalExtension() === File::TXT_FILE_EXTENSION){
+            $request->file->storeAs('public/uploads', $name);
+        }
+
         $url  = $request->schemeAndHttpHost() . Storage::url(File::UPLOAD_FILE_PATH.'/'.$name);
         return response()->json(['url' => $url, 'file' => basename($url)]);
+    }
+
+
+    /**
+     * PIPHP_ImageResize
+     *
+     *
+     * @param $image
+     * @param $w
+     * @param $h
+     * @return false|resource
+     */
+    function PIPHP_ImageResize($image, $w, $h)
+    {
+        $oldw = imagesx($image);
+        $oldh = imagesy($image);
+        $temp = imagecreatetruecolor($w, $h);
+        imagecopyresampled($temp, $image, 0, 0, 0, 0, $w, $h, $oldw, $oldh);
+        return $temp;
     }
 }
