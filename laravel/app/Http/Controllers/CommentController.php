@@ -190,18 +190,43 @@ class CommentController extends Controller
      */
     public function upload(ValidateUploadRequest $request): JsonResponse
     {
-        $name = time().'.'.$request->file->getClientOriginalExtension();
+        $ext  = $request->file->getClientOriginalExtension();
+        $name = time().'.'.$ext;
 
         if($request->file->getClientOriginalExtension() != File::TXT_FILE_EXTENSION){
             if (move_uploaded_file($_FILES['file']['tmp_name'], $name)) {
-                $uploadedImage = imagecreatefromjpeg($name);
+
+                if($ext === File::GIF_FILE_EXTENSION){
+                    $uploadedImage = imagecreatefromgif($name);
+                }
+                if($ext === File::JPEG_FILE_EXTENSION || $ext === File::JPG_FILE_EXTENSION){
+                    $uploadedImage = imagecreatefromjpeg($name);
+                }
+                if($ext === File::PNG_FILE_EXTENSION){
+                    $uploadedImage = imagecreatefrompng($name);
+                }
+
+
                 if (!$uploadedImage) {
                     throw new Exception('The uploaded file is corrupted (or wrong format)');
                 } else {
                     $resizedImage = $this->PIPHP_ImageResize($uploadedImage,File::MEDIA_FILE_WIDTH,File::MEDIA_FILE_HEIGHT);
-                    // save your image on disk
-                    if (!imagejpeg ($resizedImage, storage_path('app/public/uploads/'). $name )) {
-                        throw new Exception('failed to save resized image');
+
+
+                    if($ext === File::GIF_FILE_EXTENSION){
+                        if (!imagegif ($resizedImage, storage_path('app/public/uploads/'). $name )) {
+                            throw new Exception('failed to save resized image');
+                        }
+                    }
+                    if($ext === File::JPEG_FILE_EXTENSION || $ext === File::JPG_FILE_EXTENSION){
+                        if (!imagejpeg ($resizedImage, storage_path('app/public/uploads/'). $name )) {
+                            throw new Exception('failed to save resized image');
+                        }
+                    }
+                    if($ext === File::PNG_FILE_EXTENSION){
+                        if (!imagepng ($resizedImage, storage_path('app/public/uploads/'). $name )) {
+                            throw new Exception('failed to save resized image');
+                        }
                     }
                 }
             } else {
