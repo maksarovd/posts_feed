@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use App\Traits\RecursiveRenderer;
 
 
@@ -64,34 +65,40 @@ class Comment extends Model
      *
      *
      * @param $sorting
-     * @return LengthAwarePaginator
      * @access public static
+     * @return LengthAwarePaginator
      */
     public static function comments($sorting): LengthAwarePaginator
     {
         switch ($sorting['sortBy']) {
             case 'name':
-                return Comment::with('replies','user')
-                    ->whereNull('parent_id')
-                    ->orderBy(User::select('users.name')->whereColumn('users.id','comments.user_id'), $sorting['orderBy'])
-                    ->paginate(25);
+                $sorting['sortBy'] = 'users.name';
                 break;
             case 'email':
-                return Comment::with('replies','user')
-                    ->whereNull('parent_id')
-                    ->orderBy(User::select('users.email')->whereColumn('users.id','comments.user_id'), $sorting['orderBy'])
-                    ->paginate(25);
+                $sorting['sortBy'] = 'users.email';
                 break;
             case 'created_at':
-                return Comment::with('replies','user')
-                    ->whereNull('parent_id')
-                    ->orderBy(User::select('comments.created_at')->whereColumn('users.id','comments.user_id'), $sorting['orderBy'])
-                    ->paginate(25);
+                $sorting['sortBy'] = 'comments.created_at';
                 break;
         }
+
+        return Comment::with('user')
+            ->whereNull('parent_id')
+            ->orderBy(
+                User::select($sorting['sortBy'])->whereColumn('users.id','comments.user_id'), $sorting['orderBy']
+            )
+            ->paginate(25);
     }
 
 
+    /**
+     * Answers
+     *
+     *
+     * @param $id
+     * @access public
+     * @return array
+     */
     public function answers($id)
     {
         $collection = Comment::with('replies')
@@ -102,28 +109,19 @@ class Comment extends Model
     }
 
 
-    public function collection($id)
+
+    /**
+     * Children Comments
+     *
+     *
+     * @param $id
+     * @access public
+     * @return Collection
+     */
+    public function childrenComments($id): Collection
     {
         return Comment::with('replies')
             ->where('parent_id', $id)
             ->get();
-    }
-
-
-    public function getNestedFormatted($nested)
-    {
-        return $nested * 3;
-    }
-
-
-    public function getParent(Comment $comment)
-    {
-        return Comment::where('id', $comment->parent_id)->first();
-    }
-
-
-    public function getAuthor(Comment $comment)
-    {
-        return User::where('id', $comment->user_id)->first();
     }
 }

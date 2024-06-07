@@ -25,7 +25,7 @@
                                                     <div class="d-flex flex-start">
                                                         <div class="flex-grow-1 flex-shrink-1">
                                                             @foreach($comments as $comment)
-                                                                <div class="d-flex flex-start mt-4" style="margin-left:{{ $comment->getNestedFormatted($comment->nested) }}%">
+                                                                <div class="d-flex flex-start mt-4" style="margin-left:{{ $comment_service->getNestedFormatted($comment->nested) }}%">
                                                                     <a class="me-3" href="#">
                                                                         <img class="rounded-circle shadow-1-strong" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp" alt="avatar" width="65" height="65" />
                                                                     </a>
@@ -33,7 +33,7 @@
                                                                         <div>
                                                                             <div class="d-flex justify-content-between align-items-center">
                                                                                 <p class="mb-1">
-                                                                                    {{ $comment->getAuthor($comment)->name }} <span class="small">- {{ $comment_service->getTransformDate($comment->created_at) }}</span>
+                                                                                    {{ $comment->user->name }} <span class="small">- {{ $comment_service->getTransformDate($comment->created_at) }}</span>
                                                                                 </p>
                                                                             </div>
 
@@ -41,7 +41,7 @@
                                                                                 <p class="small mb-0">
                                                                                     <div class="alert alert-light" role="alert">
                                                                                         <b>
-                                                                                            {!! $comment_service->cutText($comment->getParent($comment)->text,50)  !!}
+                                                                                            {!! $comment_service->cutText($comment_service->getParent($comment)->text,50)  !!}
                                                                                         </b>
                                                                                     </div>
                                                                                 </p>
