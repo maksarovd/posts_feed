@@ -55,20 +55,20 @@ class Comment extends Model
      */
     public function replies(): Relation
     {
-        return Comment::hasMany(Comment::class, 'parent_id', 'id')->with(['replies']);
+        return $this->hasMany(Comment::class, 'parent_id', 'id')->with(['replies']);
     }
 
 
 
     /**
-     * Comments
+     * Parent Comments
      *
      *
      * @param $sorting
      * @access public static
      * @return LengthAwarePaginator
      */
-    public static function comments($sorting): LengthAwarePaginator
+    public static function parentComments($sorting): LengthAwarePaginator
     {
         switch ($sorting['sortBy']) {
             case 'name':
@@ -92,25 +92,6 @@ class Comment extends Model
 
 
     /**
-     * Answers
-     *
-     *
-     * @param $id
-     * @access public
-     * @return array
-     */
-    public function answers($id)
-    {
-        $collection = Comment::with('replies')
-            ->where('id', $id)
-            ->get();
-
-        return $this->simplifyNesting($collection);
-    }
-
-
-
-    /**
      * Children Comments
      *
      *
@@ -123,5 +104,24 @@ class Comment extends Model
         return Comment::with('replies')
             ->where('parent_id', $id)
             ->get();
+    }
+
+
+
+    /**
+     * Answers
+     *
+     *
+     * @param $id
+     * @access public
+     * @return array
+     */
+    public function answers($id)
+    {
+        $collection = Comment::with('replies','file')
+            ->where('id', $id)
+            ->get();
+
+        return $this->simplifyNesting($collection);
     }
 }

@@ -47,13 +47,14 @@
                                                                                 </p>
                                                                             @endif
 
-                                                                            @if($comment_service->hasImage($comment))
+
+                                                                            @if(\App\Models\File::hasImage($comment))
                                                                                 <p class="small mb-0">
                                                                                 <div class="media-object image" style="width: 320px;height: 240px">
                                                                                     <img src="{{ $comment_service->getUrl($comment) }}" alt="" class="image">
                                                                                 </div>
                                                                                 </p>
-                                                                            @elseif($comment_service->hasFile($comment))
+                                                                            @elseif(\App\Models\File::hasFile($comment))
                                                                                 <div class="media-object file">
                                                                                     <button class="btn btn-success"><a href="{{ $comment_service->getUrl($comment) }}" target="_blank">Download  <i class="bi bi-download"></i></a></button>
                                                                                 </div>

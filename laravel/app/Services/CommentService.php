@@ -75,58 +75,6 @@ class CommentService
     }
 
 
-
-    /**
-     * Has Image
-     *
-     *
-     * @param $comment
-     * @access public
-     * @return bool
-     */
-    public function hasImage($comment)
-    {
-        if(!$comment->file){
-            return false;
-        }
-
-        if(
-            str_contains($comment->file->file_name, '.jpg') ||
-            str_contains($comment->file->file_name, '.jpeg') ||
-            str_contains($comment->file->file_name, '.gif') ||
-            str_contains($comment->file->file_name, '.png')
-        ){
-            return true;
-        }
-        return false;
-    }
-
-
-
-    /**
-     * Has File
-     *
-     *
-     * @param $comment
-     * @access public
-     * @return bool
-     */
-    public function hasFile($comment)
-    {
-        if(!$comment->file){
-            return false;
-        }
-
-        if(
-            str_contains($comment->file->file_name, '.txt')
-        ){
-            return true;
-        }
-        return false;
-    }
-
-
-
     /**
      * Get Url
      *

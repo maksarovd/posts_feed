@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class File extends Model
 {
@@ -30,15 +31,53 @@ class File extends Model
 
     const JPG_FILE_EXTENSION = 'jpg';
 
+
     /**
      * Comment
      *
      *
-     * @return Relation
      * @access public
+     * @return Relation
      */
     public function comment(): Relation
     {
         return $this->belongsTo(Comment::class);
+    }
+
+
+    /**
+     * Has File
+     *
+     *
+     * @access public static
+     * @param Comment $comment
+     * @return bool
+     */
+    public static function hasFile(Comment $comment)
+    {
+        if(!$comment->file){
+            return false;
+        }
+
+        return Str::endsWith($comment->file->file_name, ['.txt']);
+    }
+
+
+
+    /**
+     * Has Image
+     *
+     *
+     * @access public static
+     * @param $comment
+     * @return bool
+     */
+    public static function hasImage($comment)
+    {
+        if(!$comment->file){
+            return false;
+        }
+
+        return Str::endsWith($comment->file->file_name, ['.jpg','.jpeg','.gif','.png']);
     }
 }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->char('captcha', 20);
             $table->text('text');
             $table->tinyInteger('nested')->nullable();
-            $table->timestamp('created_at')->default(NOW())->index();
-            $table->timestamp('updated_at')->default(NOW());
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->nullable()->useCurrentOnUpdate();;
             $table->foreignId('parent_id')->nullable()->references('id')->on('comments')->cascadeOnDelete();
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete();
         });

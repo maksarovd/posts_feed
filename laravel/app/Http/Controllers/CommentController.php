@@ -27,7 +27,7 @@ class CommentController extends Controller
         $sorting = $request->get('sorting');
 
         return view('comments.index', [
-            'comments' => Comment::comments($sorting),
+            'comments' => Comment::parentComments($sorting),
             'comment_service' => $commentService
         ]);
     }
@@ -56,7 +56,7 @@ class CommentController extends Controller
      * @param CommentService $commentService
      * @return View
      */
-    public function show(Comment $comment, CommentService $commentService): View
+    public function show(Comment $comment, CommentService $commentService)#: View
     {
         return view('comments.show', [
             'comment'  => $comment,
