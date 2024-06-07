@@ -1,1 +1,0 @@
-<textarea id="myeditorinstance" name="">Hello, World!</textarea>

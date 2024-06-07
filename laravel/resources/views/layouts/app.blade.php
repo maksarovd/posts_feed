@@ -15,6 +15,12 @@
         <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <title>{{ config('app.name', 'Laravel') }}</title>
 
+        <!-- Common -->
+        <link href="{{ asset('css/common.css') }}" rel="stylesheet">
+
+        <!-- File Uploader -->
+        <script src="{{ asset('js/file-uploader.js') }}"  rel="script"></script>
+
         <!-- Spinner -->
         <link href="{{ asset('css/spinner.css') }}" rel="stylesheet">
         <script src="{{ asset('js/spinner.js') }}"  rel="script"></script>
@@ -22,16 +28,18 @@
         <!-- Comment -->
         <script src="{{ asset('js/comment.js') }}" rel="script"></script>
 
+        <!-- Markdown -->
+        <script src="{{ asset('js/markdown.js') }}" rel="script"></script>
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-        <!-- Icons  @see https://icons.getbootstrap.su/-->
+        <!-- Icons  @see https://icons.getbootstrap.su/ -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <x-head.tinymce-config/>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
