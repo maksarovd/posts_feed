@@ -22,7 +22,7 @@ class File extends Model
 
     const TXT_FILE_EXTENSION = 'txt';
 
-        /**
+    /**
      * Comment
      *
      *

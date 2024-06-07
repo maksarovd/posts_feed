@@ -12,6 +12,15 @@ trait RecursiveRenderer
 
     private $models = [];
 
+
+    /**
+     * Simplify Nesting
+     *
+     *
+     * @param Collection $collection
+     * @access public
+     * @return array
+     */
     public function simplifyNesting(Collection $collection)
     {
         foreach($collection->getIterator() as $iteration => $model){
@@ -27,7 +36,7 @@ trait RecursiveRenderer
 
             $this->models[] = $model;
 
-            $collection = $this->collection($model->id);
+            $collection = $this->childrenComments($model->id);
 
             if(count($collection)){
                 $this->simplifyNesting($collection);

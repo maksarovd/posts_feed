@@ -184,6 +184,7 @@ class CommentController extends Controller
      * Upload
      *
      *
+     * @access public
      * @param ValidateUploadRequest $request
      * @return JsonResponse
      */
