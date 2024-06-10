@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\{Request, JsonResponse, RedirectResponse};
+use Illuminate\Http\{JsonResponse, RedirectResponse};
 use Illuminate\Contracts\View\View;
 use App\Models\{Comment, File};
 use App\Http\Requests\{ValidateUploadRequest, ValidateRequest};
-use App\Services\SortService;
+use App\Services\{SortService, UploadImageService};
 use Illuminate\Support\Facades\{Storage, Session};
 
 
@@ -96,9 +96,9 @@ class CommentController extends Controller
 
 
 
-            Session::flash('message','Saving Success!');
+            Session::flash('message',__('Saving Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error','Error when saving Comment ' .  $exception->getMessage());
+            Session::flash('error',__('Error when saving Comment ') .  $exception->getMessage());
         }
         return redirect()->route('comments.index');
     }
@@ -127,9 +127,9 @@ class CommentController extends Controller
             }
 
 
-            Session::flash('message','Updating Success!');
+            Session::flash('message',__('Updating Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error','Error when updating Comment ' .  $exception->getMessage());
+            Session::flash('error',__('Error when updating Comment ') .  $exception->getMessage());
         }
         return redirect()->route('comments.show', ['comment' => $comment]);
     }
@@ -147,9 +147,9 @@ class CommentController extends Controller
     {
         try{
             $comment->delete();
-            Session::flash('message','Deleting Success!');
+            Session::flash('message', __('Deleting Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error','Error when deleting Comment ' .  $exception->getMessage());
+            Session::flash('error',__('Error when deleting Comment ') .  $exception->getMessage());
         }
         return response()->json(['url' => route('comments.index')]);
     }
@@ -178,74 +178,19 @@ class CommentController extends Controller
      */
     public function upload(ValidateUploadRequest $request): JsonResponse
     {
-        $ext  = $request->file->getClientOriginalExtension();
-        $name = time().'.'.$ext;
+        $extension = $request->file->getClientOriginalExtension();
+        $name = time() . '.' . $extension;
 
-        if($ext != File::TXT_FILE_EXTENSION){
-            if (move_uploaded_file($_FILES['file']['tmp_name'], $name)) {
-
-                if($ext === File::GIF_FILE_EXTENSION){
-                    $uploadedImage = imagecreatefromgif($name);
-                }
-                if($ext === File::JPEG_FILE_EXTENSION || $ext === File::JPG_FILE_EXTENSION){
-                    $uploadedImage = imagecreatefromjpeg($name);
-                }
-                if($ext === File::PNG_FILE_EXTENSION){
-                    $uploadedImage = imagecreatefrompng($name);
-                }
-
-
-                if (!$uploadedImage) {
-                    throw new Exception('The uploaded file is corrupted (or wrong format)');
-                } else {
-                    $resizedImage = $this->PIPHP_ImageResize($uploadedImage,File::MEDIA_FILE_WIDTH,File::MEDIA_FILE_HEIGHT);
-
-
-                    if($ext === File::GIF_FILE_EXTENSION){
-                        if (!imagegif ($resizedImage, storage_path('app/public/uploads/'). $name )) {
-                            throw new Exception('failed to save resized image');
-                        }
-                    }
-                    if($ext === File::JPEG_FILE_EXTENSION || $ext === File::JPG_FILE_EXTENSION){
-                        if (!imagejpeg ($resizedImage, storage_path('app/public/uploads/'). $name )) {
-                            throw new Exception('failed to save resized image');
-                        }
-                    }
-                    if($ext === File::PNG_FILE_EXTENSION){
-                        if (!imagepng ($resizedImage, storage_path('app/public/uploads/'). $name )) {
-                            throw new Exception('failed to save resized image');
-                        }
-                    }
-                }
-            } else {
-                throw new Exception('failed Upload');
-            }
+        if(File::isImage($extension)){
+            UploadImageService::upload($extension, $name);
         }
 
-        if($ext === File::TXT_FILE_EXTENSION){
+        if(File::isFile($extension)){
             $request->file->storeAs('public/uploads', $name);
         }
 
-        $url  = $request->schemeAndHttpHost() . Storage::url(File::UPLOAD_FILE_PATH.'/'.$name);
+        $url = $request->schemeAndHttpHost() . Storage::url(File::UPLOAD_FILE_PATH.'/'.$name);
         return response()->json(['url' => $url, 'file' => basename($url)]);
     }
 
-
-    /**
-     * PIPHP_ImageResize
-     *
-     *
-     * @param $image
-     * @param $w
-     * @param $h
-     * @return false|resource
-     */
-    function PIPHP_ImageResize($image, $w, $h)
-    {
-        $oldw = imagesx($image);
-        $oldh = imagesy($image);
-        $temp = imagecreatetruecolor($w, $h);
-        imagecopyresampled($temp, $image, 0, 0, 0, 0, $w, $h, $oldw, $oldh);
-        return $temp;
-    }
 }
