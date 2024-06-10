@@ -70,18 +70,6 @@ class Comment extends Model
      */
     public static function parentComments($sorting): LengthAwarePaginator
     {
-        switch ($sorting['sortBy']) {
-            case 'name':
-                $sorting['sortBy'] = 'users.name';
-                break;
-            case 'email':
-                $sorting['sortBy'] = 'users.email';
-                break;
-            case 'created_at':
-                $sorting['sortBy'] = 'comments.created_at';
-                break;
-        }
-
         return Comment::with('user')
             ->whereNull('parent_id')
             ->orderBy(
