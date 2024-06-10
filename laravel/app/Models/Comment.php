@@ -96,7 +96,7 @@ class Comment extends Model
      */
     public function getNested($push)
     {
-        return $this->nested * $push;
+        return $this->getAttribute('nested') * $push;
     }
 
 
@@ -141,14 +141,13 @@ class Comment extends Model
      * Answers
      *
      *
-     * @param $id
      * @access public
      * @return array
      */
-    public function answers($id)
+    public function answers()
     {
         $collection = Comment::with('replies','file')
-            ->where('id', $id)
+            ->where('id', $this->id)
             ->get();
 
         return $this->simplifyNesting($collection);
