@@ -82,6 +82,35 @@ class File extends Model
         return Str::endsWith($comment->file->file_name, ['.jpg','.jpeg','.gif','.png']);
     }
 
+
+    /**
+     * Is File
+     *
+     *
+     * @access public static
+     * @param $extension
+     * @return bool
+     */
+    public static function isFile($extension)
+    {
+        return $extension === File::TXT_FILE_EXTENSION;
+    }
+
+
+    /**
+     * Is Image
+     *
+     *
+     * @access public static
+     * @param $extension
+     * @return bool
+     */
+    public static function isImage($extension)
+    {
+        return $extension != File::TXT_FILE_EXTENSION;
+    }
+
+
     /**
      * Get Url
      *
