@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\{AcceptedHtmlTags, ValidationHtmlTags};
 
-class CheckRequest extends FormRequest
+class ValidateRequest extends FormRequest
 {
 
     public function authorize(): bool

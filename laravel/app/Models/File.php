@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+
 
 class File extends Model
 {
     protected $guarded = [];
 
     use HasFactory;
-
 
 
     const MEDIA_FILE_WIDTH   = 320;
@@ -79,5 +80,18 @@ class File extends Model
         }
 
         return Str::endsWith($comment->file->file_name, ['.jpg','.jpeg','.gif','.png']);
+    }
+
+    /**
+     * Get Url
+     *
+     *
+     * @param $comment
+     * @access public
+     * @return string
+     */
+    public static function getUrl($comment)
+    {
+        return request()->schemeAndHttpHost() . Storage::url(File::UPLOAD_FILE_PATH.'/'.$comment->file->file_name);
     }
 }

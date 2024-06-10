@@ -50,7 +50,6 @@ class User extends Authenticatable
      *
      *
      * @return Relation
-     * @access public
      */
     public function comments(): Relation
     {

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use App\Traits\RecursiveRenderer;
+use Illuminate\Support\Carbon;
 
 
 class Comment extends Model
@@ -59,17 +60,57 @@ class Comment extends Model
     }
 
 
+    /**
+     * Get Parent
+     *
+     *
+     * @access public
+     * @return Comment
+     */
+    public function getParent(): Comment
+    {
+        return Comment::where('id', $this->parent_id)->first();
+    }
+
+
+    /**
+     * Get Date
+     *
+     *
+     * @access public
+     * @return string
+     */
+    public function getDate()
+    {
+        return Carbon::create($this->created_at)->toFormattedDateString();
+    }
+
+
+    /**
+     * Get Nested
+     *
+     *
+     * @param $push
+     * @access public
+     * @return string
+     */
+    public function getNested($push)
+    {
+        return $this->nested * $push;
+    }
+
 
     /**
      * Parent Comments
      *
      *
-     * @param $sorting
      * @access public static
      * @return LengthAwarePaginator
      */
-    public static function parentComments($sorting): LengthAwarePaginator
+    public static function parentComments(): LengthAwarePaginator
     {
+        $sorting = request('sorting');
+
         return Comment::with('user')
             ->whereNull('parent_id')
             ->orderBy(

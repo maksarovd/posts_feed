@@ -46,5 +46,4 @@ trait RecursiveRenderer
 
         return $this->models;
     }
-
 }

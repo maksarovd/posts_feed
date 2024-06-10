@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\{Request, JsonResponse, RedirectResponse};
 use Illuminate\Contracts\View\View;
 use App\Models\{Comment, File};
-use App\Http\Requests\{ValidateUploadRequest, CheckRequest};
-use App\Services\CommentService;
+use App\Http\Requests\{ValidateUploadRequest, ValidateRequest};
+use App\Services\SortService;
 use Illuminate\Support\Facades\{Storage, Session};
 
 
@@ -18,17 +18,14 @@ class CommentController extends Controller
      *
      *
      * @access public
-     * @param Request $request
-     * @param CommentService $commentService
+     * @param SortService $sorter
      * @return View
      */
-    public function index(Request $request, CommentService $commentService): View
+    public function index(SortService $sorter): View
     {
-        $sorting = $request->get('sorting');
-
         return view('comments.index', [
-            'comments' => Comment::parentComments($sorting),
-            'comment_service' => $commentService
+            'comments' => Comment::parentComments(),
+            'sorter'   => $sorter
         ]);
     }
 
@@ -38,7 +35,7 @@ class CommentController extends Controller
      *
      *
      * @access public
-     * @param Comment $comment
+     * @param Comment|null $comment
      * @return View
      */
     public function create(Comment $comment = null): View
@@ -53,15 +50,13 @@ class CommentController extends Controller
      *
      * @access public
      * @param Comment $comment
-     * @param CommentService $commentService
      * @return View
      */
-    public function show(Comment $comment, CommentService $commentService): View
+    public function show(Comment $comment): View
     {
         return view('comments.show', [
             'comment'  => $comment,
-            'comments' => $comment->answers($comment->id),
-            'comment_service' => $commentService
+            'comments' => $comment->answers($comment->id)
         ]);
     }
 
@@ -72,15 +67,11 @@ class CommentController extends Controller
      *
      * @access public
      * @param Comment $comment
-     * @param CommentService $commentService
      * @return View
      */
-    public function edit(Comment $comment, CommentService $commentService): View
+    public function edit(Comment $comment): View
     {
-        return view('comments.edit', [
-            'comment' => $comment,
-            'comment_service' => $commentService
-        ]);
+        return view('comments.edit', ['comment' => $comment]);
     }
 
 
@@ -89,10 +80,10 @@ class CommentController extends Controller
      *
      *
      * @access public
-     * @param CheckRequest $request
+     * @param ValidateRequest $request
      * @return RedirectResponse
      */
-    public function store(CheckRequest $request): RedirectResponse
+    public function store(ValidateRequest $request): RedirectResponse
     {
         try{
             (new Comment)->fill($request->except(['file_input', 'file']))->save();
@@ -121,11 +112,11 @@ class CommentController extends Controller
      *
      *
      * @access public
-     * @param CheckRequest $request
+     * @param ValidateRequest $request
      * @param Comment $comment
      * @return RedirectResponse
      */
-    public function update(CheckRequest $request, Comment $comment): RedirectResponse
+    public function update(ValidateRequest $request, Comment $comment): RedirectResponse
     {
         try{
             $comment->fill($request->except(['file_input', 'file']))->save();
@@ -193,7 +184,7 @@ class CommentController extends Controller
         $ext  = $request->file->getClientOriginalExtension();
         $name = time().'.'.$ext;
 
-        if($request->file->getClientOriginalExtension() != File::TXT_FILE_EXTENSION){
+        if($ext != File::TXT_FILE_EXTENSION){
             if (move_uploaded_file($_FILES['file']['tmp_name'], $name)) {
 
                 if($ext === File::GIF_FILE_EXTENSION){
@@ -234,7 +225,7 @@ class CommentController extends Controller
             }
         }
 
-        if($request->file->getClientOriginalExtension() === File::TXT_FILE_EXTENSION){
+        if($ext === File::TXT_FILE_EXTENSION){
             $request->file->storeAs('public/uploads', $name);
         }
 
