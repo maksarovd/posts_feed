@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\{Request, JsonResponse, RedirectResponse};
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 use App\Models\{Comment, File};
 use App\Http\Requests\{ValidateUploadRequest, CheckRequest};
 use App\Services\CommentService;
