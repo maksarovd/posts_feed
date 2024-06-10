@@ -17,13 +17,13 @@
                                     <label class="input-group-text" for="inputGroupSelect01">Sort By</label>
 
                                     <select class="form-select"  onchange="location = this.value;">
-                                        <option value="{{ route('comments.index') }}" {{ $comment_service->isSelected('name','asc')}}>default</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'name','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $comment_service->isSelected('name','asc') }}>Name (asc) </option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'name','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $comment_service->isSelected('name','desc') }}>Name (desc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'email','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $comment_service->isSelected('email','asc') }}>Email (asc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'email','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $comment_service->isSelected('email','desc') }}>Email (desc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'created_at','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $comment_service->isSelected('created_at','asc') }}>Date (asc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'created_at','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $comment_service->isSelected('created_at','desc') }}>Date (desc)</option>
+                                        <option value="{{ route('comments.index') }}" {{ $sorter->isSelected('name','asc')}}>default</option>
+                                        <option value="{{ route('comments.index',['sortBy'=> 'name','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('name','asc') }}>Name (asc) </option>
+                                        <option value="{{ route('comments.index',['sortBy'=> 'name','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('name','desc') }}>Name (desc)</option>
+                                        <option value="{{ route('comments.index',['sortBy'=> 'email','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('email','asc') }}>Email (asc)</option>
+                                        <option value="{{ route('comments.index',['sortBy'=> 'email','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('email','desc') }}>Email (desc)</option>
+                                        <option value="{{ route('comments.index',['sortBy'=> 'created_at','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('created_at','asc') }}>Date (asc)</option>
+                                        <option value="{{ route('comments.index',['sortBy'=> 'created_at','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('created_at','desc') }}>Date (desc)</option>
                                     </select>
 
                                 </div>
@@ -42,10 +42,10 @@
                                     <tbody class="table-group-divider">
                                     @foreach($comments as $comment)
                                         <tr class="comment" data-comment-id="{{ $comment->id }}">
-                                            <td>{!! $comment_service->cutText($comment->text, 60) !!}</td>
+                                            <td>{!! \Illuminate\Support\Str::limit($comment->text, 60) !!}</td>
                                             <td>{{ $comment->user->name }}</td>
                                             <td>{{ $comment->user->email }}</td>
-                                            <td>{{ $comment_service->getTransformDate($comment->created_at) }}</td>
+                                            <td>{{ $comment->getDate() }}</td>
                                             <td><a href="{{ route('comments.show', $comment->id) }}"><button class="btn btn-primary">Show</button></a></td>
                                         </tr>
                                     @endforeach

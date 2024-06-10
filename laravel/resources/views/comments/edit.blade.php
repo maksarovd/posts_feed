@@ -31,7 +31,7 @@
 
                             @if(\App\Models\File::hasImage($comment))
                                 <div class="media-object image" style="display: none; width: 320px;height: 240px">
-                                    <img src="{{ $comment_service->getUrl($comment) }}" alt="" class="image">
+                                    <img src="{{ \App\Models\File::getUrl($comment) }}" alt="" class="image">
                                 </div>
                             @else
                                 <div class="media-object image" style="display: none; width: 320px;height: 240px">
@@ -41,7 +41,7 @@
 
                             @if(\App\Models\File::hasFile($comment))
                                 <div class="media-object file" style="display: none;" >
-                                    <button class="btn btn-success"><a href="{{ $comment_service->getUrl($comment) }}" class="file-download"  target="_blank">Download  <i class="bi bi-download"></i></a></button>
+                                    <button class="btn btn-success"><a href="{{ \App\Models\File::getUrl($comment) }}" class="file-download"  target="_blank">Download  <i class="bi bi-download"></i></a></button>
                                 </div>
                             @else
                                 <div class="media-object file" style="display: none;" >
