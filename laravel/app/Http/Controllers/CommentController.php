@@ -96,9 +96,9 @@ class CommentController extends Controller
 
 
 
-            Session::flash('message','Saving Success!');
+            Session::flash('message',__('Saving Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error','Error when saving Comment ' .  $exception->getMessage());
+            Session::flash('error',__('Error when saving Comment ') .  $exception->getMessage());
         }
         return redirect()->route('comments.index');
     }
@@ -127,9 +127,9 @@ class CommentController extends Controller
             }
 
 
-            Session::flash('message','Updating Success!');
+            Session::flash('message',__('Updating Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error','Error when updating Comment ' .  $exception->getMessage());
+            Session::flash('error',__('Error when updating Comment ') .  $exception->getMessage());
         }
         return redirect()->route('comments.show', ['comment' => $comment]);
     }
@@ -147,9 +147,9 @@ class CommentController extends Controller
     {
         try{
             $comment->delete();
-            Session::flash('message','Deleting Success!');
+            Session::flash('message', __('Deleting Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error','Error when deleting Comment ' .  $exception->getMessage());
+            Session::flash('error',__('Error when deleting Comment ') .  $exception->getMessage());
         }
         return response()->json(['url' => route('comments.index')]);
     }
