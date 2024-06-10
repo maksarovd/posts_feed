@@ -24,8 +24,8 @@
                                                 <div class="col">
                                                     <div class="d-flex flex-start">
                                                         <div class="flex-grow-1 flex-shrink-1">
-                                                            @foreach($comments as $comment)
-                                                                <div class="d-flex flex-start mt-4" style="margin-left:{{ $comment->getNested(3) }}%">
+                                                            @foreach($comment->answers() as $answer)
+                                                                <div class="d-flex flex-start mt-4" style="margin-left:{{ $answer->getNested(3) }}%">
                                                                     <a class="me-3" href="#">
                                                                         <img class="rounded-circle shadow-1-strong" src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(11).webp" alt="avatar" width="65" height="65" />
                                                                     </a>
@@ -33,40 +33,40 @@
                                                                         <div>
                                                                             <div class="d-flex justify-content-between align-items-center">
                                                                                 <p class="mb-1">
-                                                                                    {{ $comment->user->name }} <span class="small">- {{ $comment->getDate() }}</span>
+                                                                                    {{ $answer->user->name }} <span class="small">- {{ $answer->getDate() }}</span>
                                                                                 </p>
                                                                             </div>
 
-                                                                            @if($comment->parent_id)
+                                                                            @if($answer->parent_id)
                                                                                 <p class="small mb-0">
                                                                                     <div class="alert alert-light" role="alert">
                                                                                         <b>
-                                                                                            {!! \Illuminate\Support\Str::limit($comment->getParent()->text,50)  !!}
+                                                                                            {!! \Illuminate\Support\Str::limit($answer->getParent()->text,50)  !!}
                                                                                         </b>
                                                                                     </div>
                                                                                 </p>
                                                                             @endif
 
 
-                                                                            @if(\App\Models\File::hasImage($comment))
+                                                                            @if(\App\Models\File::hasImage($answer))
                                                                                 <p class="small mb-0">
                                                                                 <div class="media-object image" style="width: 320px;height: 240px">
-                                                                                    <img src="{{ \App\Models\File::getUrl($comment) }}" alt="" class="image">
+                                                                                    <img src="{{ \App\Models\File::getUrl($answer) }}" alt="" class="image">
                                                                                 </div>
                                                                                 </p>
-                                                                            @elseif(\App\Models\File::hasFile($comment))
+                                                                            @elseif(\App\Models\File::hasFile($answer))
                                                                                 <div class="media-object file">
                                                                                     <button class="btn btn-success">
-                                                                                        <a href="{{ \App\Models\File::getUrl($comment) }}" target="_blank">Download  <i class="bi bi-download"></i></a>
+                                                                                        <a href="{{ \App\Models\File::getUrl($answer) }}" target="_blank">Download  <i class="bi bi-download"></i></a>
                                                                                     </button>
                                                                                 </div>
                                                                             @endif
 
 
                                                                             <p class="small mb-0">
-                                                                                {!! $comment->text !!}
+                                                                                {!! $answer->text !!}
                                                                             </p>
-                                                                            <a href="{{ route('comments.create',$comment->id) }}"> <span class="small" style="color: blue;"><i class="bi bi-reply"></i> reply </span></a>
+                                                                            <a href="{{ route('comments.create',$answer->id) }}"> <span class="small" style="color: blue;"><i class="bi bi-reply"></i> reply </span></a>
                                                                         </div>
                                                                     </div>
                                                                 </div>

@@ -54,10 +54,7 @@ class CommentController extends Controller
      */
     public function show(Comment $comment): View
     {
-        return view('comments.show', [
-            'comment'  => $comment,
-            'comments' => $comment->answers($comment->id)
-        ]);
+        return view('comments.show', ['comment' => $comment]);
     }
 
 
