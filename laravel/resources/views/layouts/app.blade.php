@@ -31,6 +31,12 @@
         <!-- Markdown -->
         <script src="{{ asset('js/markdown.js') }}" rel="script"></script>
 
+        <!-- Pusher Broadcasting -->
+        <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+        <!-- Sweetalert -->
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -44,7 +50,7 @@
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')
-
+            @include('sweetalert::alert')
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white dark:bg-gray-800 shadow">

@@ -114,8 +114,4 @@
             </div>
         </div>
     </div>
-    <!-- Spinner -->
-    <section id="loading">
-        <div id="loading-content"></div>
-    </section>
 </x-app-layout>
