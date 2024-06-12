@@ -69,6 +69,21 @@
             </div>
         </div>
     </div>
+    <script>
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
+        });
+
+        var channel = pusher.subscribe('Comment');
+        channel.bind('App\\Events\\CommentAdd', function() {
+            swal({
+                title:'{{ __('New Comment Added') }}',
+            });
+        });
+    </script>
 </x-app-layout>
 
 

@@ -5,7 +5,7 @@
                 <a href="{{ route('comments.index') }}"><button class="btn btn-success button" style="margin: 2px;">Back</button></a>
                 @if(Auth::user()->id === $comment->user_id)
                     <a href="{{ route('comments.edit', $comment->id) }}"><button class="btn btn-warning" style="margin: 2px;">Edit</button></a>
-                    <button class="btn btn-danger" onclick="Comment.delete('{{ route('comments.destroy',$comment->id) }}','{{ csrf_token() }}')" style="margin: 2px;">Delete</button>
+                    <a href="{{ route('comments.destroy', $comment->id) }}" class="btn btn-danger" data-confirm-delete="true" style="margin: 2px">Delete</a>
                 @endif
             </div>
         </div>
@@ -96,8 +96,4 @@
             </div>
         </div>
     </div>
-    <!-- Spinner -->
-    <section id="loading">
-        <div id="loading-content"></div>
-    </section>
 </x-app-layout>

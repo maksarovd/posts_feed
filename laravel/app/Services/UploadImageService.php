@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\File;
 use Exception;
+use GdImage;
 
 
 class UploadImageService
@@ -42,9 +43,9 @@ class UploadImageService
      * @param $extension
      * @param $name
      * @access public static
-     * @return false|\GdImage|resource
+     * @return false|GdImage
      */
-    public static function createImage($extension, $name)
+    public static function createImage($extension, $name): GdImage|bool
     {
         if($extension === File::GIF_FILE_EXTENSION){
             return imagecreatefromgif($name);
@@ -55,6 +56,7 @@ class UploadImageService
         if($extension === File::PNG_FILE_EXTENSION){
             return imagecreatefrompng($name);
         }
+        return false;
     }
 
 
@@ -100,9 +102,9 @@ class UploadImageService
      * @param $w
      * @param $h
      * @access public static
-     * @return false|\GdImage|resource
+     * @return false|GdImage
      */
-    public static function resizeImage($image, $w, $h)
+    public static function resizeImage($image, $w, $h): GdImage|bool
     {
         $oldw = imagesx($image);
         $oldh = imagesy($image);

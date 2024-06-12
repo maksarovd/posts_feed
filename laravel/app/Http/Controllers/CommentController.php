@@ -8,6 +8,9 @@ use App\Models\{Comment, File};
 use App\Http\Requests\{ValidateUploadRequest, ValidateRequest};
 use App\Services\{SortService, UploadImageService};
 use Illuminate\Support\Facades\{Storage, Session};
+use App\Events\CommentAdd;
+use Exception;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class CommentController extends Controller
@@ -54,6 +57,7 @@ class CommentController extends Controller
      */
     public function show(Comment $comment): View
     {
+        confirmDelete(__('Delete Comment?'), '');
         return view('comments.show', ['comment' => $comment]);
     }
 
@@ -94,11 +98,10 @@ class CommentController extends Controller
                 File::create($file);
             }
 
-
-
-            Session::flash('message',__('Saving Success!'));
+            CommentAdd::dispatch();
+            Alert::success('Success Title', __('Saving Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error',__('Error when saving Comment ') .  $exception->getMessage());
+            Alert::error('Error Title', __('Error when saving Comment ') .  $exception->getMessage());
         }
         return redirect()->route('comments.index');
     }
@@ -126,10 +129,9 @@ class CommentController extends Controller
                 File::find($comment->file->id)->fill($file)->save();
             }
 
-
-            Session::flash('message',__('Updating Success!'));
+            Alert::success('Success Title', __('Updating Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error',__('Error when updating Comment ') .  $exception->getMessage());
+            Alert::error('Error Title', __('Error when updating Comment ') .  $exception->getMessage());
         }
         return redirect()->route('comments.show', ['comment' => $comment]);
     }
@@ -141,17 +143,17 @@ class CommentController extends Controller
      *
      * @access public
      * @param Comment $comment
-     * @return JsonResponse
+     * @return RedirectResponse
      */
-    public function destroy(Comment $comment): JsonResponse
+    public function destroy(Comment $comment): RedirectResponse
     {
         try{
             $comment->delete();
-            Session::flash('message', __('Deleting Success!'));
+            Alert::info('Info Title', __('Deleting Success!'));
         }catch(\Throwable $exception){
-            Session::flash('error',__('Error when deleting Comment ') .  $exception->getMessage());
+            Alert::error('Error Title', __('Error when deleting Comment ') .  $exception->getMessage());
         }
-        return response()->json(['url' => route('comments.index')]);
+        return redirect()->route('comments.index');
     }
 
 
@@ -175,6 +177,7 @@ class CommentController extends Controller
      * @access public
      * @param ValidateUploadRequest $request
      * @return JsonResponse
+     * @throws Exception
      */
     public function upload(ValidateUploadRequest $request): JsonResponse
     {
