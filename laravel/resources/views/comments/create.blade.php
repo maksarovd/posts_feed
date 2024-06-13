@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="col-12">
             <div class="d-flex">
-                <a href="{{ route('comments.index',request('language')) }}"><button class="btn btn-success">Back</button></a>
+                <a href="{{ route('comments.index',request('language')) }}"><button class="btn btn-success">{{ __('comments.back') }}</button></a>
             </div>
         </div>
     </x-slot>
