@@ -11,7 +11,7 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        $locale = $request->language;
+        $locale = $request->language ?? 'en';
 
         $locales = [];
         foreach(['en', 'ua'] as $language){
