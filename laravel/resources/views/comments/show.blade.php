@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="col-12">
             <div class="d-flex">
-                <a href="{{ route('comments.index') }}"><button class="btn btn-success button" style="margin: 2px;">Back</button></a>
+                <a href="{{ route('comments.index',request('language')) }}"><button class="btn btn-success button" style="margin: 2px;">{{ __('comments.back') }}</button></a>
                 @if(Auth::user()->id === $comment->user_id)
-                    <a href="{{ route('comments.edit', $comment->id) }}"><button class="btn btn-warning" style="margin: 2px;">Edit</button></a>
-                    <a href="{{ route('comments.destroy', $comment->id) }}" class="btn btn-danger" data-confirm-delete="true" style="margin: 2px">Delete</a>
+                    <a href="{{ route('comments.edit', ['language' => request('language'),$comment->id]) }}"><button class="btn btn-warning" style="margin: 2px;">{{ __('comments.edit') }}</button></a>
+                    <a href="{{ route('comments.destroy', ['language' => request('language'),$comment->id]) }}" class="btn btn-danger" data-confirm-delete="true" style="margin: 2px">{{ __('comments.delete') }}</a>
                 @endif
             </div>
         </div>
@@ -57,7 +57,7 @@
                                                                             @elseif(\App\Models\File::hasFile($answer))
                                                                                 <div class="media-object file">
                                                                                     <button class="btn btn-success">
-                                                                                        <a href="{{ \App\Models\File::getUrl($answer) }}" target="_blank">Download  <i class="bi bi-download"></i></a>
+                                                                                        <a href="{{ \App\Models\File::getUrl($answer) }}" target="_blank">{{ __('comments.download') }}  <i class="bi bi-download"></i></a>
                                                                                     </button>
                                                                                 </div>
                                                                             @endif
@@ -66,7 +66,7 @@
                                                                             <p class="small mb-0">
                                                                                 {!! $answer->text !!}
                                                                             </p>
-                                                                            <a href="{{ route('comments.create',$answer->id) }}"> <span class="small" style="color: blue;"><i class="bi bi-reply"></i> reply </span></a>
+                                                                            <a href="{{ route('comments.create',['language' => request('language'), $answer->id]) }}"> <span class="small" style="color: blue;"><i class="bi bi-reply"></i> {{ __('comments.reply') }} </span></a>
                                                                         </div>
                                                                     </div>
                                                                 </div>

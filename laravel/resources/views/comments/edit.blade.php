@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="col-12">
             <div class="d-flex">
-                <a href="{{ route('comments.index') }}"><button class="btn btn-success">Back</button></a>
+                <a href="{{ route('comments.index',request('language')) }}"><button class="btn btn-success">{{ __('comments.back') }}</button></a>
             </div>
         </div>
     </x-slot>
@@ -10,7 +10,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <form method="post" action="{{ route('comments.update', $comment) }}" name="create" enctype="multipart/form-data">
+                    <form method="post" action="{{ route('comments.update',['language' => request('language'),$comment]) }}" name="create" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="btn-group mr-2 captcha" role="group" aria-label="First group">
@@ -19,14 +19,14 @@
                         </div>
                         <div class="mb-3 mt-3">
                             <div class="captcha">
-                                <input type="text" class="form-control"   name="captcha" placeholder="{{ __('Enter Captcha (required)') }}" required>
+                                <input type="text" class="form-control"   name="captcha" placeholder="{{ __('comments.captcha') }}" required>
                             </div>
                             @error('captcha')
                             <div class="alert alert-danger">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-5">
-                            <label for="text" class="form-label">Edit Comment</label>
+                            <label for="text" class="form-label">{{ __('comments.comment') }}</label>
                             <textarea class="form-control textarea" name="text" id="text" rows="10">{{ $comment->text }}</textarea>
 
                             @if(\App\Models\File::hasImage($comment))
@@ -41,11 +41,11 @@
 
                             @if(\App\Models\File::hasFile($comment))
                                 <div class="media-object file" style="display: none;" >
-                                    <button class="btn btn-success"><a href="{{ \App\Models\File::getUrl($comment) }}" class="file-download"  target="_blank">Download  <i class="bi bi-download"></i></a></button>
+                                    <button class="btn btn-success"><a href="{{ \App\Models\File::getUrl($comment) }}" class="file-download"  target="_blank">{{ __('comments.download') }}  <i class="bi bi-download"></i></a></button>
                                 </div>
                             @else
                                 <div class="media-object file" style="display: none;" >
-                                    <button class="btn btn-success"><a href="" class="file-download"  target="_blank">Download  <i class="bi bi-download"></i></a></button>
+                                    <button class="btn btn-success"><a href="" class="file-download"  target="_blank">{{ __('comments.download') }}  <i class="bi bi-download"></i></a></button>
                                 </div>
                             @endif
 
@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="alert alert-success" style="display: none;">
-                            {{ __('File upload success!') }}
+                            {{ __('comments.upload_success') }}
                         </div>
 
                         @if($comment->file)
@@ -90,11 +90,11 @@
                             <div class="col-4">
                                 <div class="form-check">
                                     <input class="form-check-input preview" type="checkbox" value="" id="flexCheckIndeterminate" onclick="Markdown.preview()">
-                                    <label class="form-check-label" for="flexCheckIndeterminate">Preview</label>
+                                    <label class="form-check-label" for="flexCheckIndeterminate">{{ __('comments.preview') }}</label>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary">Save Comment</button>
+                                <button type="submit" class="btn btn-primary">{{ __('comments.save') }}</button>
                             </div>
                         </div>
                     </form>

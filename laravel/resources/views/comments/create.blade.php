@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="col-12">
             <div class="d-flex">
-                <a href="{{ route('comments.index') }}"><button class="btn btn-success">Back</button></a>
+                <a href="{{ route('comments.index',request('language')) }}"><button class="btn btn-success">Back</button></a>
             </div>
         </div>
     </x-slot>
@@ -20,7 +20,7 @@
 
                         <div class="mb-3 mt-3">
                             <div class="captcha">
-                                <input type="text" class="form-control" name="captcha" placeholder="{{ __('Enter Captcha (required)') }}" required>
+                                <input type="text" class="form-control" name="captcha" placeholder="{{ __('comments.captcha') }}" required>
                                 @error('captcha')
                                     <div class="alert alert-danger">{{ $message }}</div>
                                 @enderror
@@ -29,14 +29,14 @@
 
 
                         <div class="mb-3">
-                            <label for="text" class="form-label">Enter Comment</label>
+                            <label for="text" class="form-label">{{ __('comments.comment') }}</label>
                             <textarea class="form-control textarea" name="text" id="text" rows="10"></textarea>
 
                             <div class="media-object image" style="display: none; width: 320px;height: 240px">
                                 <img src="" alt="" class="image">
                             </div>
                             <div class="media-object file" style="display: none;">
-                                <button class="btn btn-success"><a href="" class="file-download"  target="_blank">Download  <i class="bi bi-download"></i></a></button>
+                                <button class="btn btn-success"><a href="" class="file-download"  target="_blank">{{ __('comments.download') }}  <i class="bi bi-download"></i></a></button>
                             </div>
 
 
@@ -48,7 +48,6 @@
                         </div>
 
                         <div class="mb-5 textarea-uploader">
-                            <label for="formFile" class="form-label">Upload file</label>
                             <input class="form-control uploader" data-upload-url="{{ route('comments.upload') }}" type="file" id="formFile" name="file">
                             @error('file')
                                 <div class="alert alert-danger">{{ $message }}</div>
@@ -56,7 +55,7 @@
                         </div>
 
                         <div class="alert alert-success" style="display: none;">
-                            {{ __('File upload success!') }}
+                            {{ __('comments.upload_success') }}
                         </div>
 
 
@@ -83,11 +82,11 @@
                             <div class="col-4">
                                 <div class="form-check">
                                     <input class="form-check-input preview" type="checkbox" value="" id="flexCheckIndeterminate" onclick="Markdown.preview()">
-                                    <label class="form-check-label preview" for="flexCheckIndeterminate">Preview</label>
+                                    <label class="form-check-label preview" for="flexCheckIndeterminate">{{ __('comments.preview') }}</label>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <button type="submit" class="btn btn-primary">Save Comment</button>
+                                <button type="submit" class="btn btn-primary">{{ __('comments.save') }}</button>
                             </div>
                         </div>
                     </form>

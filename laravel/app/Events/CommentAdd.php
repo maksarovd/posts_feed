@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 
 class CommentAdd implements ShouldBroadcastNow
 {
-    use Dispatchable, InteractsWithSockets, InteractsWithBroadcasting, SerializesModels;
+    use Dispatchable, InteractsWithBroadcasting, SerializesModels;
 
 
     public function broadcastOn()

@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 use App\Models\{Comment, File};
 use App\Http\Requests\{ValidateUploadRequest, ValidateRequest};
 use App\Services\{SortService, UploadImageService};
-use Illuminate\Support\Facades\{Storage, Session};
+use Illuminate\Support\Facades\{Storage, Session, Cache};
 use App\Events\CommentAdd;
 use Exception;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -52,10 +52,11 @@ class CommentController extends Controller
      *
      *
      * @access public
+     * @param $language
      * @param Comment $comment
      * @return View
      */
-    public function show(Comment $comment): View
+    public function show($language, Comment $comment): View
     {
         confirmDelete(__('Delete Comment?'), '');
         return view('comments.show', ['comment' => $comment]);
@@ -67,10 +68,11 @@ class CommentController extends Controller
      *
      *
      * @access public
+     * @param $language
      * @param Comment $comment
      * @return View
      */
-    public function edit(Comment $comment): View
+    public function edit($language, Comment $comment): View
     {
         return view('comments.edit', ['comment' => $comment]);
     }
@@ -103,7 +105,7 @@ class CommentController extends Controller
         }catch(\Throwable $exception){
             Alert::error('Error Title', __('Error when saving Comment ') .  $exception->getMessage());
         }
-        return redirect()->route('comments.index');
+        return redirect()->route('comments.index',request('language'));
     }
 
 
@@ -133,7 +135,7 @@ class CommentController extends Controller
         }catch(\Throwable $exception){
             Alert::error('Error Title', __('Error when updating Comment ') .  $exception->getMessage());
         }
-        return redirect()->route('comments.show', ['comment' => $comment]);
+        return redirect()->route('comments.show', ['language' => request('language'),'comment' => $comment]);
     }
 
 
@@ -153,7 +155,7 @@ class CommentController extends Controller
         }catch(\Throwable $exception){
             Alert::error('Error Title', __('Error when deleting Comment ') .  $exception->getMessage());
         }
-        return redirect()->route('comments.index');
+        return redirect()->route('comments.index',request('language'));
     }
 
 
