@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="col-12">
             <div class="d-flex">
-                <a href="{{ route('comments.create') }}"><button class="btn btn-success">Add New Comment</button></a>
+                <a href="{{ route('comments.create', request('language')) }}"><button class="btn btn-success">{{ __('comments.new_comment') }}</button></a>
             </div>
         </div>
     </x-slot>
@@ -14,16 +14,16 @@
                         <div class="col-12">
                             <div class="container m-10 text-center">
                                 <div class="input-group mb-3">
-                                    <label class="input-group-text" for="inputGroupSelect01">Sort By</label>
+                                    <label class="input-group-text" for="inputGroupSelect01">{{ __('comments.sort_by') }}</label>
 
                                     <select class="form-select"  onchange="location = this.value;">
-                                        <option value="{{ route('comments.index') }}" {{ $sorter->isSelected('name','asc')}}>default</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'name','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('name','asc') }}>Name (asc) </option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'name','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('name','desc') }}>Name (desc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'email','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('email','asc') }}>Email (asc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'email','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('email','desc') }}>Email (desc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'created_at','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('created_at','asc') }}>Date (asc)</option>
-                                        <option value="{{ route('comments.index',['sortBy'=> 'created_at','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('created_at','desc') }}>Date (desc)</option>
+                                        <option value="{{ route('comments.index', request('language')) }}" {{ $sorter->isSelected('name','asc')}}>{{ __('comments.default') }}</option>
+                                        <option value="{{ route('comments.index',['language' => request('language'), 'sortBy'=> 'name','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('name','asc') }}>{{ __('comments.name_asc') }}</option>
+                                        <option value="{{ route('comments.index',['language' => request('language'),'sortBy'=> 'name','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('name','desc') }}>{{ __('comments.name_desc') }}</option>
+                                        <option value="{{ route('comments.index',['language' => request('language'),'sortBy'=> 'email','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('email','asc') }}>{{ __('comments.email_asc') }}</option>
+                                        <option value="{{ route('comments.index',['language' => request('language'),'sortBy'=> 'email','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('email','desc') }}>{{ __('comments.email_desc') }}</option>
+                                        <option value="{{ route('comments.index',['language' => request('language'),'sortBy'=> 'created_at','orderBy'=> 'asc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('created_at','asc') }}>{{ __('comments.date_asc') }}</option>
+                                        <option value="{{ route('comments.index',['language' => request('language'),'sortBy'=> 'created_at','orderBy'=> 'desc', 'page' => request('page',1)]) }}" {{ $sorter->isSelected('created_at','desc') }}>{{ __('comments.date_desc') }}</option>
                                     </select>
 
                                 </div>
@@ -32,11 +32,11 @@
                                 <table class="table table-hover">
                                     <thead>
                                     <tr>
-                                        <th scope="col">Text</th>
-                                        <th scope="col" class="name">User Name</th>
-                                        <th scope="col" class="email">E-mail</th>
-                                        <th scope="col" class="created_at">Date</th>
-                                        <th scope="col">Show</th>
+                                        <th scope="col">{{ __('comments.text') }}</th>
+                                        <th scope="col" class="name">{{ __('comments.username') }}</th>
+                                        <th scope="col" class="email">{{ __('comments.email') }}</th>
+                                        <th scope="col" class="created_at">{{ __('comments.date') }}</th>
+                                        <th scope="col">{{ __('comments.show') }}</th>
                                     </tr>
                                     </thead>
                                     <tbody class="table-group-divider">
@@ -46,7 +46,7 @@
                                             <td>{{ $comment->user->name }}</td>
                                             <td>{{ $comment->user->email }}</td>
                                             <td>{{ $comment->getDate() }}</td>
-                                            <td><a href="{{ route('comments.show', $comment->id) }}"><button class="btn btn-primary">Show</button></a></td>
+                                            <td><a href="{{ route('comments.show', [request('language'),$comment->id]) }}"><button class="btn btn-primary">{{ __('comments.show') }}</button></a></td>
                                         </tr>
                                     @endforeach
                                     </tbody>
@@ -85,19 +85,3 @@
         });
     </script>
 </x-app-layout>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -2,10 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades;
-use Illuminate\View\View;
-use App\Models\{File, Comment};
+use Illuminate\Support\{ServiceProvider, Facades, Collection};
+
 
 class AppServiceProvider extends ServiceProvider
 {
