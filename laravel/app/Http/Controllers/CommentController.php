@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 use App\Models\{Comment, File};
 use App\Http\Requests\{ValidateUploadRequest, ValidateRequest};
 use App\Services\{SortService, UploadImageService};
-use Illuminate\Support\Facades\{Storage, Session, Cache};
+use Illuminate\Support\Facades\{Storage, Session, Cache, Auth, Process, DB};
 use App\Events\CommentAdd;
 use Exception;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -89,23 +89,29 @@ class CommentController extends Controller
     public function store(ValidateRequest $request): RedirectResponse
     {
         try{
-            (new Comment)->fill($request->except(['file_input', 'file']))->save();
+            DB::transaction(function() use ($request){
+                (new Comment)->fill($request->only(['captcha', 'text','parent_id','user_id']))->save();
 
-            if($request->file_input){
-                $file = [
-                    'comment_id' => Comment::latest()->first()->id,
-                    'file_name'  => $request->file_input
-                ];
+                if($request->file_input){
+                    $file = [
+                        'comment_id' => Comment::latest()->first()->id,
+                        'file_name'  => $request->file_input
+                    ];
 
-                File::create($file);
-            }
+                    File::create($file);
+                }
 
-            CommentAdd::dispatch();
+                CommentAdd::dispatch();
+            });
+
+            DB::commit();
             Alert::success('Success Title', __('Saving Success!'));
         }catch(\Throwable $exception){
+            DB::rollBack();
             Alert::error('Error Title', __('Error when saving Comment ') .  $exception->getMessage());
         }
-        return redirect()->route('comments.index',request('language'));
+
+        return redirect()->route('comments.index',request('language','en'));
     }
 
 
@@ -120,21 +126,26 @@ class CommentController extends Controller
      */
     public function update(ValidateRequest $request, Comment $comment): RedirectResponse
     {
-        try{
-            $comment->fill($request->except(['file_input', 'file']))->save();
+        DB::transaction(function() use ($request, $comment){
+            try{
+                $comment->fill($request->except(['file_input', 'file']))->save();
 
-            if($request->file_input){
-                $file = [
-                    'file_name'  => $request->file_input
-                ];
+                if($request->file_input){
+                    $file = [
+                        'file_name'  => $request->file_input
+                    ];
 
-                File::find($comment->file->id)->fill($file)->save();
+                    File::find($comment->file->id)->fill($file)->save();
+                }
+
+                DB::commit();
+                Alert::success('Success Title', __('Updating Success!'));
+            }catch(\Throwable $exception){
+                DB::rollBack();
+                Alert::error('Error Title', __('Error when updating Comment ') .  $exception->getMessage());
             }
+        });
 
-            Alert::success('Success Title', __('Updating Success!'));
-        }catch(\Throwable $exception){
-            Alert::error('Error Title', __('Error when updating Comment ') .  $exception->getMessage());
-        }
         return redirect()->route('comments.show', ['language' => request('language'),'comment' => $comment]);
     }
 
@@ -150,11 +161,18 @@ class CommentController extends Controller
     public function destroy(Comment $comment): RedirectResponse
     {
         try{
-            $comment->delete();
+            DB::transaction(function() use($comment){
+                $comment->delete();
+                File::find($comment->file->id)->delete();
+            });
+
+            DB::commit();
             Alert::info('Info Title', __('Deleting Success!'));
         }catch(\Throwable $exception){
+            DB::rollBack();
             Alert::error('Error Title', __('Error when deleting Comment ') .  $exception->getMessage());
         }
+
         return redirect()->route('comments.index',request('language'));
     }
 
