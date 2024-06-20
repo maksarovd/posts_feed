@@ -21,10 +21,11 @@ class CommentController extends Controller
      *
      *
      * @access public
+     * @param $language
      * @param SortService $sorter
      * @return View
      */
-    public function index(SortService $sorter): View
+    public function index($language, SortService $sorter)#: View
     {
         return view('comments.index', [
             'comments' => Comment::parentComments(),
@@ -38,10 +39,11 @@ class CommentController extends Controller
      *
      *
      * @access public
+     * @param $language
      * @param Comment|null $comment
      * @return View
      */
-    public function create(Comment $comment = null): View
+    public function create($language, Comment $comment = null): View
     {
         return view('comments.create', ['comment' => $comment]);
     }
@@ -89,8 +91,10 @@ class CommentController extends Controller
     public function store(ValidateRequest $request): RedirectResponse
     {
         try{
+
             DB::transaction(function() use ($request){
                 (new Comment)->fill($request->only(['captcha', 'text','parent_id','user_id']))->save();
+
 
                 if($request->file_input){
                     $file = [
@@ -111,7 +115,9 @@ class CommentController extends Controller
             Alert::error('Error Title', __('Error when saving Comment ') .  $exception->getMessage());
         }
 
+
         return redirect()->route('comments.index',request('language','en'));
+
     }
 
 
@@ -126,6 +132,7 @@ class CommentController extends Controller
      */
     public function update(ValidateRequest $request, Comment $comment): RedirectResponse
     {
+
         DB::transaction(function() use ($request, $comment){
             try{
                 $comment->fill($request->except(['file_input', 'file']))->save();
@@ -143,10 +150,13 @@ class CommentController extends Controller
             }catch(\Throwable $exception){
                 DB::rollBack();
                 Alert::error('Error Title', __('Error when updating Comment ') .  $exception->getMessage());
+
             }
         });
 
+
         return redirect()->route('comments.show', ['language' => request('language'),'comment' => $comment]);
+
     }
 
 
@@ -173,7 +183,9 @@ class CommentController extends Controller
             Alert::error('Error Title', __('Error when deleting Comment ') .  $exception->getMessage());
         }
 
+
         return redirect()->route('comments.index',request('language'));
+
     }
 
 
